@@ -1,2 +1,2 @@
-# TCP-programs
-A sortment of different programs that utilize TCP for connections.
+# Network Programs
+A sortment of different network programs that for example utilize TCP or UDP for connections.
