@@ -2,7 +2,6 @@
  * Program which sets up a TCP server.
  * The server can both receive and send messages to the connected client.
  * The program takes one argument and that is the port which the server shall listen to.
- * To close the program write quit.
  */
 
 #include <stdio.h>
@@ -41,10 +40,7 @@ void *sendThread(void *arg)
 		{
 			fprintf(stderr,"Read interrupted.\n");
 		}
-		if (strncmp(sendBuf,"quit",4) == 0)
-		{
-			break;
-		}
+                // Can't have an exit command here because the program only listen here if a client is connected.
 		if ((sendBytes = send(sockfd,sendBuf,strlen(sendBuf)+1,0)) < 0)
 		{
 			perror("send");
