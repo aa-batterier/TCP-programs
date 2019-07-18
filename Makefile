@@ -1,22 +1,22 @@
-all: send_message receive_and_send_message send_and_receive_message send_insta_message send_limited_repeated_messages send_unlimited_repeated_messages
+all: tcp_send_message tcp_receive_and_send_message tcp_send_and_receive_message tcp_send_insta_message tcp_send_limited_repeated_messages tcp_send_unlimited_repeated_messages
 
-send_message: send_message.c
-	gcc -Wall -g -o $@ send_message.c
+tcp_send_message: tcp_send_message.c
+	gcc -Wall -g -o $@ tcp_send_message.c
 
-receive_and_send_message: receive_and_send_message.c
-	gcc -Wall -g -o $@ receive_and_send_message.c -lpthread
+tcp_receive_and_send_message: tcp_receive_and_send_message.c
+	gcc -Wall -g -o $@ tcp_receive_and_send_message.c -lpthread
 
-send_and_receive_message: send_and_receive_message.c
-	gcc -Wall -g -o $@ send_and_receive_message.c -lpthread
+tcp_send_and_receive_message: tcp_send_and_receive_message.c
+	gcc -Wall -g -o $@ tcp_send_and_receive_message.c -lpthread
 
-send_insta_message: send_insta_message.c
-	gcc -Wall -g -o $@ send_insta_message.c
+tcp_send_insta_message: tcp_send_insta_message.c
+	gcc -Wall -g -o $@ tcp_send_insta_message.c
 
-send_limited_repeated_messages: send_limited_repeated_messages.c
-	gcc -Wall -g -o $@ send_limited_repeated_messages.c
+tcp_send_limited_repeated_messages: tcp_send_limited_repeated_messages.c
+	gcc -Wall -g -o $@ tcp_send_limited_repeated_messages.c
 
-send_unlimited_repeated_messages: send_unlimited_repeated_messages.c
-	gcc -Wall -g -o $@ send_unlimited_repeated_messages.c
+tcp_send_unlimited_repeated_messages: tcp_send_unlimited_repeated_messages.c
+	gcc -Wall -g -o $@ tcp_send_unlimited_repeated_messages.c
 
 clean:
-	rm -rv send_message receive_and_send_message send_and_receive_message send_insta_message send_limited_repeated_messages send_unlimited_repeated_messages
+	rm -rv tcp_send_message tcp_receive_and_send_message tcp_send_and_receive_message tcp_send_insta_message tcp_send_limited_repeated_messages tcp_send_unlimited_repeated_messages
