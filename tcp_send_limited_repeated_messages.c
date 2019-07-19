@@ -26,12 +26,11 @@ int main(int argc, char *argv[])
 		fprintf(stderr,"usage: %s <receiver ip> <reciver port> <\"message\"> <number of messages> <interval between messages in ms>\n",argv[0]);
 		exit(1);
 	}
-	int serverSockfd,
+	int sockfd,
 	    rv,
-	    sendbytes,
+	    sendBytes,
 	    numberOfMessages = atoi(argv[4]),
 	    interval = atoi(argv[5])*1000,
-	    messageSize = strlen(argv[3])+1;
 	struct addrinfo hints,
 			*servinfo,
 			*p;
@@ -45,14 +44,14 @@ int main(int argc, char *argv[])
 	}
 	for (p = servinfo; p != NULL; p = p->ai_next)
 	{
-		if ((serverSockfd = socket(p->ai_family,p->ai_socktype,p->ai_protocol)) < 0)
+		if ((sockfd = socket(p->ai_family,p->ai_socktype,p->ai_protocol)) < 0)
 		{
 			perror("socket");
 			continue;
 		}
-		if (connect(serverSockfd,p->ai_addr,p->ai_addrlen) < 0)
+		if (connect(sockfd,p->ai_addr,p->ai_addrlen) < 0)
 		{
-			close(serverSockfd);
+			close(sockfd);
 			perror("connect");
 			continue;
 		}
@@ -67,15 +66,15 @@ int main(int argc, char *argv[])
 	p = NULL;
 	for (int loops = 0; loops < numberOfMessages; loops++)
 	{
-		if ((sendbytes = send(serverSockfd,argv[3],messageSize,0)) < 0)
+		if ((sendBytes = send(sockfd,argv[3],strlen(argv[3])+1,0)) < 0)
 		{
 			fprintf(stderr,"send failed on message number %d.\n",loops);
-			close(serverSockfd);
+			close(sockfd);
 			exit(1);
 		}
-		printf("Sendt message %s number %d, which is %d bytes on socket %d.\n",argv[3],loops,sendbytes,serverSockfd);
+		printf("Sendt message %s number %d, which is %d bytes on socket %d.\n",argv[3],loops,sendBytes,sockfd);
 		usleep(interval);
 	}
-	close(serverSockfd);
+	close(sockfd);
 	exit(0);
 }
