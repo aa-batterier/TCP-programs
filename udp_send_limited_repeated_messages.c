@@ -30,7 +30,9 @@ int main(int argc, char *argv[])
 	    err,
 	    sendBytes,
             numberOfMessages = atoi(argv[4]),
-            interval = atoi(argv[5])*1000;
+            interval = atoi(argv[5])*1000,
+            // Saves the size of the message so I don't need to calculate it in every loop.
+            messageSize = strlen(argv[3])+1;
 	struct addrinfo hints,
 			*servInfo,
 			*p;
@@ -60,9 +62,10 @@ int main(int argc, char *argv[])
 	}
 	for (int loops = 0; loops < numberOfMessages; loops++)
 	{
-                if ((sendBytes = sendto(sockfd,argv[3],strlen(argv[3])+1,0,p->ai_addr,p->ai_addrlen)) < 0)
+                if ((sendBytes = sendto(sockfd,argv[3],messageSize,0,p->ai_addr,p->ai_addrlen)) < 0)
                 {
                         perror("sendto");
+                        fprintf(stderr,"sendto failed on message number %d.\n",loops);
                         p = NULL;
                         close(sockfd);
                         exit(1);

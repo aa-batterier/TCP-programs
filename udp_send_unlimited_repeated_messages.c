@@ -1,6 +1,6 @@
 /*
  * This program sends the same message unlimited amout of times with a specified
- * interval in miliseconds between each message to a server over TCP.
+ * interval in miliseconds between each message to a server over UDP.
  * The program takes four arguments.
  * The first argument is the ip address of the server.
  * The second argument is the port of the server.
@@ -26,56 +26,52 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	int sockfd,
-	    rv,
+	    err,
 	    sendBytes,
-	    interval = atoi(argv[4])*1000,
+            interval = atoi(argv[4])*1000,
             // Saves the size of the message so I don't need to calculate it in every loop.
             messageSize = strlen(argv[3])+1;
 	struct addrinfo hints,
-			*servinfo,
+			*servInfo,
 			*p;
 	memset(&hints,0,sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	if ((rv = getaddrinfo(argv[1],argv[2],&hints,&servinfo)) < 0)
+	hints.ai_socktype = SOCK_DGRAM;
+	if ((err = getaddrinfo(argv[1],argv[2],&hints,&servInfo)) < 0)
 	{
-		fprintf(stderr,"getaddrinfo: %s\n",gai_strerror(rv));
+		fprintf(stderr,"getaddrinfo: %s\n",gai_strerror(err));
 		exit(1);
 	}
-	for (p = servinfo; p != NULL; p = p->ai_next)
+	for (p = servInfo; p != NULL; p = p->ai_next)
 	{
 		if ((sockfd = socket(p->ai_family,p->ai_socktype,p->ai_protocol)) < 0)
 		{
 			perror("socket");
 			continue;
 		}
-		if (connect(sockfd,p->ai_addr,p->ai_addrlen) < 0)
-		{
-			close(sockfd);
-			perror("connect");
-			continue;
-		}
-		break;
-	}
-	freeaddrinfo(servinfo);
+                break;
+        }
+        freeaddrinfo(servInfo);
 	if (p == NULL)
 	{
-		fprintf(stderr,"connect failed\n");
+		fprintf(stderr,"connection to server failed\n");
+                close(sockfd);
 		exit(1);
 	}
-	p = NULL;
 	for (int loops = 0;; loops++)
 	{
-		if ((sendBytes = send(sockfd,argv[3],messageSize,0)) < 0)
-		{
-                        perror("send");
-			fprintf(stderr,"send failed on message number %d.\n",loops);
-			close(sockfd);
-			exit(1);
-		}
+                if ((sendBytes = sendto(sockfd,argv[3],messageSize,0,p->ai_addr,p->ai_addrlen)) < 0)
+                {
+                        perror("sendto");
+                        fprintf(stderr,"sendto failed on message number %d.\n",loops);
+                        p = NULL;
+                        close(sockfd);
+                        exit(1);
+                }
 		printf("Sendt message %s number %d, which is %d bytes on socket %d.\n",argv[3],loops,sendBytes,sockfd);
 		usleep(interval);
-	}
-	close(sockfd);
-	exit(0);
+        }
+        p = NULL;
+        close(sockfd);
+        exit(0);
 }

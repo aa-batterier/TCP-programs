@@ -8,3 +8,4 @@ udp_receive_message
 udp_send_message
 udp_send_insta_message
 udp_send_limited_repeated_messages
+udp_send_unlimited_repeated_messages
