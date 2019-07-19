@@ -1,6 +1,7 @@
-send_message
-receive_and_send_message
-send_and_receive_message
-send_insta_message
-send_limited_repeated_messages
-send_unlimited_repeated_messages
+tcp_send_message
+tcp_receive_and_send_message
+tcp_send_and_receive_message
+tcp_send_insta_message
+tcp_send_limited_repeated_messages
+tcp_send_unlimited_repeated_messages
+udp_receive_message
